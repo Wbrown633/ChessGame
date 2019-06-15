@@ -1,5 +1,8 @@
 import pygame
 
+# Pieces: By en:User:Cburnett - Own workThis W3C-unspecified vector image was created with 
+# Inkscape., CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=1499810
+
 class Game:    
     def __init__(self):
         self.pieces = []
@@ -37,6 +40,13 @@ class Piece:
     def move(self, posn):
         pass
 
+    def draw(self, screen, location):
+        location = (myround(location[0] - 50, 100), myround(location[1] - 50, 100))
+        screen.blit(self.white_pawn, location)   
+    
+
+
+
 
 class Pawn(Piece): 
 
@@ -71,14 +81,30 @@ class Pawn(Piece):
 
 class Rook(Piece):
 
-    # return a list of tuples with the coordinates of legal moves for this piece
-    def legalMoves(self):
-        pass
+    initial = pygame.image.load("White_rook.PNG")
+    white_rook = pygame.transform.scale(initial, (100,100)) 
+
+    def __init__(self, color, posn):
+        super().__init__(color, posn)
+
+    # return true if moving to the given coord is legal 
+    def legalMove(self, coord):
+        if coord[0] != self.coord[0] and coord[1] != self.coord[1]:
+            return False
+        else:
+            return True
         
     def move(self):
         pass
 
+    def draw(self, screen, location):
+        location = (myround(location[0] - 50, 100), myround(location[1] - 50, 100))
+        screen.blit(self.white_rook, location)   
+
 class Knight(Piece):
+
+    initial = pygame.image.load("White_knight.PNG")
+    white_rook = pygame.transform.scale(initial, (100,100)) 
 
     # return a list of tuples with the coordinates of legal moves for this piece
     def legalMoves(self):
@@ -89,6 +115,9 @@ class Knight(Piece):
 
 class Bishop(Piece):
 
+    initial = pygame.image.load("White_bishop.PNG")
+    white_rook = pygame.transform.scale(initial, (100,100)) 
+
     # return a list of tuples with the coordinates of legal moves for this piece
     def legalMoves(self):
         pass
@@ -98,6 +127,10 @@ class Bishop(Piece):
 
 class Queen(Piece):
 
+    initial = pygame.image.load("White_queen.PNG")
+    white_rook = pygame.transform.scale(initial, (100,100)) 
+
+
     # return a list of tuples with the coordinates of legal moves for this piece
     def legalMoves(self):
         pass
@@ -106,6 +139,10 @@ class Queen(Piece):
         pass
 
 class King(Piece):
+
+    initial = pygame.image.load("White_king.PNG")
+    white_rook = pygame.transform.scale(initial, (100,100)) 
+
 
     # return a list of tuples with the coordinates of legal moves for this piece
     def legalMoves(self):
@@ -133,11 +170,10 @@ def main():
     # main loop
     while running:
 
-        updateBoard(g, board)
-
         # event handling, gets all event from the event queue
         for event in pygame.event.get():
             pygame.display.update()
+            updateBoard(g, board)
             # click to move pieces
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -173,6 +209,8 @@ def updatePiecePosition(piece, from_square):
 def addPieces(g):
     for x in range(8):
         g.pieces.append(Pawn('White', (50 + x * 100,650)))
+    g.pieces.append(Rook('White', (100, 750)))
+    g.pieces.append(Rook('White', (750,750)))
 
 def myround(x, base):
     return base * round(x/base)
