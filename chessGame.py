@@ -40,22 +40,20 @@ class Piece:
     def move(self, posn):
         pass
 
-    def draw(self, screen, location):
+    def draw(self, screen, location, surface):
         location = (myround(location[0] - 50, 100), myround(location[1] - 50, 100))
-        screen.blit(self.white_pawn, location)   
+        screen.blit(surface, location)   
     
 
 
 
 
 class Pawn(Piece): 
-
-    initial = pygame.image.load("white_pawn.PNG")
-    white_pawn = pygame.transform.scale(initial, (100,100))
     
     def __init__(self, color, posn):
         super().__init__(color, posn)
         self.hasMoved = False
+        self.image = pygame.transform.scale(pygame.image.load("White_pawn.PNG"), (100,100))
 
     # return true if the piece can move to that location, false if not
     def legalMove(self, location):
@@ -69,23 +67,16 @@ class Pawn(Piece):
             if location[1] - self.coord[1] == 1:
                 return True
             else:
-                return False
-
-
-    def draw(self, screen, location):
-        location = (myround(location[0] - 50, 100), myround(location[1] - 50, 100))
-        screen.blit(self.white_pawn, location)          
+                return False         
     
     def promote(self):
         pass
 
 class Rook(Piece):
 
-    initial = pygame.image.load("White_rook.PNG")
-    white_rook = pygame.transform.scale(initial, (100,100)) 
-
     def __init__(self, color, posn):
         super().__init__(color, posn)
+        self.image = pygame.transform.scale(pygame.image.load("White_rook.PNG"), (100,100))
 
     # return true if moving to the given coord is legal 
     def legalMove(self, coord):
@@ -97,17 +88,15 @@ class Rook(Piece):
     def move(self):
         pass
 
-    def draw(self, screen, location):
-        location = (myround(location[0] - 50, 100), myround(location[1] - 50, 100))
-        screen.blit(self.white_rook, location)   
 
 class Knight(Piece):
 
-    initial = pygame.image.load("White_knight.PNG")
-    white_rook = pygame.transform.scale(initial, (100,100)) 
+    def __init__(self, color, posn):
+        super().__init__(color, posn)
+        self.image = pygame.transform.scale(pygame.image.load("White_knight.PNG"), (100,100))
 
     # return a list of tuples with the coordinates of legal moves for this piece
-    def legalMoves(self):
+    def legalMove(self,coord):
         pass
 
     def move(self):
@@ -115,21 +104,25 @@ class Knight(Piece):
 
 class Bishop(Piece):
 
-    initial = pygame.image.load("White_bishop.PNG")
-    white_rook = pygame.transform.scale(initial, (100,100)) 
+    def __init__(self, color, posn):
+        super().__init__(color, posn)
+        self.image = pygame.transform.scale(pygame.image.load("White_bishop.PNG"), (100,100))
+
 
     # return a list of tuples with the coordinates of legal moves for this piece
-    def legalMoves(self):
-        pass
+    def legalMove(self,coord):
+        if (self.coord[0] == coord[0] or self.coord[1] == coord[1]):
+            return False
+        return True 
 
     def move(self):
         pass
 
 class Queen(Piece):
 
-    initial = pygame.image.load("White_queen.PNG")
-    white_rook = pygame.transform.scale(initial, (100,100)) 
-
+    def __init__(self, color, posn):
+        super().__init__(color, posn)
+        self.image = pygame.transform.scale(pygame.image.load("White_queen.PNG"), (100,100))
 
     # return a list of tuples with the coordinates of legal moves for this piece
     def legalMoves(self):
@@ -139,10 +132,9 @@ class Queen(Piece):
         pass
 
 class King(Piece):
-
-    initial = pygame.image.load("White_king.PNG")
-    white_rook = pygame.transform.scale(initial, (100,100)) 
-
+    def __init__(self, color, posn):
+        super().__init__(color, posn)
+        self.image = pygame.transform.scale(pygame.image.load("White_king.PNG"), (100,100))
 
     # return a list of tuples with the coordinates of legal moves for this piece
     def legalMoves(self):
@@ -195,7 +187,7 @@ def main():
 def updateBoard(g, board):
     board.draw(g.screen)
     for p in g.pieces:
-        p.draw(g.screen, p.posn)
+        p.draw(g.screen, p.posn, p.image)
     pygame.display.update()    
 
 # if this piece can move to that position, move it there 
@@ -209,8 +201,14 @@ def updatePiecePosition(piece, from_square):
 def addPieces(g):
     for x in range(8):
         g.pieces.append(Pawn('White', (50 + x * 100,650)))
-    g.pieces.append(Rook('White', (100, 750)))
-    g.pieces.append(Rook('White', (750,750)))
+    g.pieces.append(Rook('White', (50, 750)))
+    g.pieces.append(Knight('White', (150, 750)))
+    g.pieces.append(Bishop('White', (250, 750)))
+    g.pieces.append(Queen('White', (350, 750)))
+    g.pieces.append(King('White', (450, 750)))
+    g.pieces.append(Bishop('White', (550, 750)))
+    g.pieces.append(Knight('White', (650, 750)))    
+    g.pieces.append(Rook('White', (750, 750)))
 
 def myround(x, base):
     return base * round(x/base)
