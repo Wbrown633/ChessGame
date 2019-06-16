@@ -58,10 +58,12 @@ class Pawn(Piece):
         self.image = pygame.transform.scale(pygame.image.load(color + "_pawn.PNG"), (100,100))
 
     # return true if the piece can move to that location, false if not
-    def legalMove(self, location):
+    def legalMove(self, location, game):
         x_dist = location[0] - self.coord[0]
         y_dist = location[1] - self.coord[1]
         dist = x_dist + y_dist
+        if self.color != game.turn:
+            return False
         if self.color == 'White':
             if self.hasMoved == False:
                 if x_dist == 0 and (y_dist == 1 or y_dist == 2):
@@ -98,7 +100,9 @@ class Rook(Piece):
         super().__init__(color, posn)
         self.image = pygame.transform.scale(pygame.image.load(color + "_rook.PNG"), (100,100))
     # return true if moving to the given coord is legal 
-    def legalMove(self, coord):
+    def legalMove(self, coord, game):
+        if self.color != game.turn:
+            return False
         if coord[0] != self.coord[0] and coord[1] != self.coord[1]:
             return False
         else:
@@ -115,7 +119,9 @@ class Knight(Piece):
         self.image = pygame.transform.scale(pygame.image.load(color + "_knight.PNG"), (100,100))
 
     # return a list of tuples with the coordinates of legal moves for this piece
-    def legalMove(self,coord):
+    def legalMove(self,coord,game):
+        if self.color != game.turn:
+            return False
         x_dist = abs(self.coord[0] - coord[0])
         y_dist = abs(self.coord[1] - coord[1])
         dist = x_dist + y_dist
@@ -134,7 +140,9 @@ class Bishop(Piece):
 
 
     # return a list of tuples with the coordinates of legal moves for this piece
-    def legalMove(self,coord):
+    def legalMove(self,coord, game):
+        if self.color != game.turn:
+            return False
         x_dist = abs(self.coord[0] - coord[0])
         y_dist = abs(self.coord[1] - coord[1])
         if (x_dist == y_dist):
@@ -151,10 +159,12 @@ class Queen(Piece):
         self.image = pygame.transform.scale(pygame.image.load(color + "_queen.PNG"), (100,100))
 
     # return a list of tuples with the coordinates of legal moves for this piece
-    def legalMove(self, coord):
+    def legalMove(self, coord, game):
+        if self.color != game.turn:
+            return False
         r = Rook('White', self.posn)
         b = Bishop('White', self.posn)
-        if (r.legalMove(coord) or b.legalMove(coord)):
+        if (r.legalMove(coord,game) or b.legalMove(coord,game)):
             return True
         return False
 
@@ -167,7 +177,9 @@ class King(Piece):
         self.image = pygame.transform.scale(pygame.image.load(color + "_king.PNG"), (100,100))
 
     # return a list of tuples with the coordinates of legal moves for this piece
-    def legalMove(self, coord):
+    def legalMove(self, coord, game):
+        if self.color != game.turn:
+            return False
         x_dist = abs(self.coord[0] - coord[0])
         y_dist = abs(self.coord[1] - coord[1])
         dist = x_dist + y_dist
@@ -212,7 +224,8 @@ def main():
                         g.selected_piece = findClosestPiece(g,click)
                     else:
                         to_square = (myround(event.pos[0], 50), myround(event.pos[1], 50))
-                        updatePiecePosition(g, g.selected_piece, to_square)
+                        if updatePiecePosition(g, g.selected_piece, to_square):
+                            nextTurn(g)
                         updateBoard(g, board)
                         g.selected_piece = None
                 
@@ -231,11 +244,13 @@ def updateBoard(g, board):
 # if this piece can move to that position, move it there 
 def updatePiecePosition(g, piece, from_square):
     coord = findCoord(from_square)
-    if piece.legalMove(coord):
+    if piece.legalMove(coord, g):
         piece.posn = from_square
         del g.board_state[piece.coord]
         piece.coord = coord        
         g.board_state[coord] = piece 
+        return True
+    return False    
     
 
 def addPieces(g):
@@ -282,6 +297,13 @@ def eucDist(pos1, pos2):
 # given a posn return it's coordinates on the chess board
 def findCoord(posn):
     return ((posn[0] + 50) // 100 , 8 - (posn[1] + 50) // 100 + 1)
+
+# change the color of the turn
+def nextTurn(game):
+    if game.turn == 'White':
+        game.turn = 'Black'
+    else:
+        game.turn = 'White'
 
 
 main()
