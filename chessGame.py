@@ -10,6 +10,7 @@ class Game:
         self.board_image = pygame.image.load("board.gif")
         self.screen = pygame.display.set_mode((800,800), pygame.RESIZABLE)
         self.selected_piece = None
+        self.board_state = {}
     
 
 class Board:   
@@ -209,7 +210,7 @@ def main():
                         g.selected_piece = findClosestPiece(g,click)
                     else:
                         to_square = (myround(event.pos[0], 50), myround(event.pos[1], 50))
-                        updatePiecePosition(g.selected_piece, to_square)
+                        updatePiecePosition(g, g.selected_piece, to_square)
                         updateBoard(g, board)
                         g.selected_piece = None
                 
@@ -226,11 +227,13 @@ def updateBoard(g, board):
     pygame.display.update()    
 
 # if this piece can move to that position, move it there 
-def updatePiecePosition(piece, from_square):
+def updatePiecePosition(g, piece, from_square):
     coord = findCoord(from_square)
     if piece.legalMove(coord):
         piece.posn = from_square
-        piece.coord = coord
+        del g.board_state[piece.coord]
+        piece.coord = coord        
+        g.board_state[coord] = piece 
     
 
 def addPieces(g):
@@ -254,6 +257,9 @@ def addPieces(g):
     g.pieces.append(Bishop('Black', (550, 50)))
     g.pieces.append(Knight('Black', (650, 50)))    
     g.pieces.append(Rook('Black', (750, 50)))
+    for p in g.pieces:
+        g.board_state[p.coord] = p
+    print(g.board_state)
 
 def myround(x, base):
     return base * round(x/base)
