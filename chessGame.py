@@ -11,6 +11,7 @@ class Game:
         self.screen = pygame.display.set_mode((800,800), pygame.RESIZABLE)
         self.selected_piece = None
         self.board_state = {}
+        self.turn = 'White'
     
 
 class Board:   
@@ -73,6 +74,7 @@ class Pawn(Piece):
                     return True
                 else:
                     return False
+        # move logic for black pawns 
         else:
             if self.hasMoved == False:
                 if x_dist == 0 and (y_dist == -1 or y_dist == -2):
