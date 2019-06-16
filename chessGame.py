@@ -97,7 +97,9 @@ class Knight(Piece):
 
     # return a list of tuples with the coordinates of legal moves for this piece
     def legalMove(self,coord):
-        pass
+        if (abs(self.coord[0] - coord[0]) + abs(self.coord[1] - coord[1]) == 3):
+            return True
+        return False
 
     def move(self):
         pass
@@ -125,8 +127,12 @@ class Queen(Piece):
         self.image = pygame.transform.scale(pygame.image.load("White_queen.PNG"), (100,100))
 
     # return a list of tuples with the coordinates of legal moves for this piece
-    def legalMoves(self):
-        pass
+    def legalMove(self, coord):
+        r = Rook('White', self.posn)
+        b = Bishop('White', self.posn)
+        if (r.legalMove(coord) or b.legalMove(coord)):
+            return True
+        return False
 
     def move(self):
         pass
@@ -137,8 +143,10 @@ class King(Piece):
         self.image = pygame.transform.scale(pygame.image.load("White_king.PNG"), (100,100))
 
     # return a list of tuples with the coordinates of legal moves for this piece
-    def legalMoves(self):
-        pass
+    def legalMove(self, coord):
+        if (abs(self.coord[0] - coord[0]) == 1 or abs(self.coord[1] - coord[1]) == 1):
+            return True
+        return False
 
     def move(self):
         pass
