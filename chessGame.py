@@ -53,21 +53,38 @@ class Pawn(Piece):
     def __init__(self, color, posn):
         super().__init__(color, posn)
         self.hasMoved = False
-        self.image = pygame.transform.scale(pygame.image.load("White_pawn.PNG"), (100,100))
+        self.image = pygame.transform.scale(pygame.image.load(color + "_pawn.PNG"), (100,100))
 
     # return true if the piece can move to that location, false if not
     def legalMove(self, location):
-        if self.hasMoved == False:
-            if location[1] - self.coord[1] == 2 or location[1] - self.coord[1] == 1:
-                self.hasMoved = True
-                return True
-            else: 
-                return False 
-        else:
-            if location[1] - self.coord[1] == 1:
-                return True
+        x_dist = location[0] - self.coord[0]
+        y_dist = location[1] - self.coord[1]
+        dist = x_dist + y_dist
+        if self.color == 'White':
+            if self.hasMoved == False:
+                if x_dist == 0 and (y_dist == 1 or y_dist == 2):
+                    self.hasMoved = True
+                    return True
+                else: 
+                    return False 
             else:
-                return False         
+                if x_dist == 0 and y_dist == 1:
+                    return True
+                else:
+                    return False
+        else:
+            if self.hasMoved == False:
+                if x_dist == 0 and (y_dist == -1 or y_dist == -2):
+                    self.hasMoved = True
+                    return True
+                else: 
+                    return False 
+            else:
+                if x_dist == 0 and y_dist == -1:
+                    return True
+                else:
+                    return False
+                             
     
     def promote(self):
         pass
@@ -76,8 +93,7 @@ class Rook(Piece):
 
     def __init__(self, color, posn):
         super().__init__(color, posn)
-        self.image = pygame.transform.scale(pygame.image.load("White_rook.PNG"), (100,100))
-
+        self.image = pygame.transform.scale(pygame.image.load(color + "_rook.PNG"), (100,100))
     # return true if moving to the given coord is legal 
     def legalMove(self, coord):
         if coord[0] != self.coord[0] and coord[1] != self.coord[1]:
@@ -93,7 +109,7 @@ class Knight(Piece):
 
     def __init__(self, color, posn):
         super().__init__(color, posn)
-        self.image = pygame.transform.scale(pygame.image.load("White_knight.PNG"), (100,100))
+        self.image = pygame.transform.scale(pygame.image.load(color + "_knight.PNG"), (100,100))
 
     # return a list of tuples with the coordinates of legal moves for this piece
     def legalMove(self,coord):
@@ -111,7 +127,7 @@ class Bishop(Piece):
 
     def __init__(self, color, posn):
         super().__init__(color, posn)
-        self.image = pygame.transform.scale(pygame.image.load("White_bishop.PNG"), (100,100))
+        self.image = pygame.transform.scale(pygame.image.load(color + "_bishop.PNG"), (100,100))
 
 
     # return a list of tuples with the coordinates of legal moves for this piece
@@ -129,7 +145,7 @@ class Queen(Piece):
 
     def __init__(self, color, posn):
         super().__init__(color, posn)
-        self.image = pygame.transform.scale(pygame.image.load("White_queen.PNG"), (100,100))
+        self.image = pygame.transform.scale(pygame.image.load(color + "_queen.PNG"), (100,100))
 
     # return a list of tuples with the coordinates of legal moves for this piece
     def legalMove(self, coord):
@@ -145,7 +161,7 @@ class Queen(Piece):
 class King(Piece):
     def __init__(self, color, posn):
         super().__init__(color, posn)
-        self.image = pygame.transform.scale(pygame.image.load("White_king.PNG"), (100,100))
+        self.image = pygame.transform.scale(pygame.image.load(color + "_king.PNG"), (100,100))
 
     # return a list of tuples with the coordinates of legal moves for this piece
     def legalMove(self, coord):
@@ -228,6 +244,16 @@ def addPieces(g):
     g.pieces.append(Bishop('White', (550, 750)))
     g.pieces.append(Knight('White', (650, 750)))    
     g.pieces.append(Rook('White', (750, 750)))
+    for x in range(8):
+        g.pieces.append(Pawn('Black', (50 + x * 100,150)))
+    g.pieces.append(Rook('Black', (50, 50)))
+    g.pieces.append(Knight('Black', (150, 50)))
+    g.pieces.append(Bishop('Black', (250, 50)))
+    g.pieces.append(Queen('Black', (350, 50)))
+    g.pieces.append(King('Black', (450, 50)))
+    g.pieces.append(Bishop('Black', (550, 50)))
+    g.pieces.append(Knight('Black', (650, 50)))    
+    g.pieces.append(Rook('Black', (750, 50)))
 
 def myround(x, base):
     return base * round(x/base)
