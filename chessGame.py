@@ -97,7 +97,10 @@ class Knight(Piece):
 
     # return a list of tuples with the coordinates of legal moves for this piece
     def legalMove(self,coord):
-        if (abs(self.coord[0] - coord[0]) + abs(self.coord[1] - coord[1]) == 3):
+        x_dist = abs(self.coord[0] - coord[0])
+        y_dist = abs(self.coord[1] - coord[1])
+        dist = x_dist + y_dist
+        if (dist == 3 and (x_dist == 1 or y_dist == 1)):
             return True
         return False
 
@@ -113,9 +116,11 @@ class Bishop(Piece):
 
     # return a list of tuples with the coordinates of legal moves for this piece
     def legalMove(self,coord):
-        if (self.coord[0] == coord[0] or self.coord[1] == coord[1]):
-            return False
-        return True 
+        x_dist = abs(self.coord[0] - coord[0])
+        y_dist = abs(self.coord[1] - coord[1])
+        if (x_dist == y_dist):
+            return True
+        return False 
 
     def move(self):
         pass
