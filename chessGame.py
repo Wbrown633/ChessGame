@@ -144,8 +144,14 @@ class King(Piece):
 
     # return a list of tuples with the coordinates of legal moves for this piece
     def legalMove(self, coord):
-        if (abs(self.coord[0] - coord[0]) == 1 or abs(self.coord[1] - coord[1]) == 1):
+        x_dist = abs(self.coord[0] - coord[0])
+        y_dist = abs(self.coord[1] - coord[1])
+        dist = x_dist + y_dist
+        if (dist == 1):
             return True
+        elif (dist == 2):
+            if (x_dist == 1):
+                return True
         return False
 
     def move(self):
