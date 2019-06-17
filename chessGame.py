@@ -171,8 +171,8 @@ class Queen(Piece):
     def legalMove(self, coord, game):
         if self.color != game.turn:
             return False
-        r = Rook('White', self.posn)
-        b = Bishop('White', self.posn)
+        r = Rook(self.color, self.posn)
+        b = Bishop(self.color, self.posn)
         if (r.legalMove(coord,game) or b.legalMove(coord,game)):
             return True
         return False
@@ -228,8 +228,6 @@ def main():
             # click to move pieces
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    print(event.pos)
-                    print(findCoord(event.pos))
                     if g.selected_piece == None:
                         click = event.pos
                         coord = findCoord(click)
@@ -261,6 +259,12 @@ def updatePiecePosition(g, piece, to_square):
     if piece.teammateOnSquare(coord,g):
         return False
     if piece.legalMove(coord, g):
+        path = findPath(piece.coord, coord)
+        print(path)
+        for place in path:
+            if piece.teammateOnSquare(place,g):
+                print("Teamate piece in the way!")
+                return False
         checkCapture(coord, g)
         piece.posn = to_square
         del g.board_state[piece.coord]
@@ -317,9 +321,30 @@ def nextTurn(game):
 def checkCapture(coord, g):
     if coord in g.board_state:
         del g.board_state[coord]
-    print(g.board_state.__len__())
 
+# return a list of posn between this location and that
+def findPath(start, end):
+    listofCoords = []
+    # Diagonal Line
+    if start[0] != end[0] and start[1] != end[1]:
+        if start[0] < end[0]:
+            while start[0] != end[0]:
+                start = (start[0] + 1, start[1] + 1)
+                listofCoords.append(start)
+            return listofCoords
+        if start[0] > end[0]:
+            while start[0] != end[0]:
+                start = (start[0] - 1, start[1] - 1)
+                listofCoords.append(start)
+            return listofCoords
 
+    # Horizontal Line
+
+    # Vertical Line
+    elif start[1] != end[1]:
+        pass    
+    
+    return []   
 
 main()
 
