@@ -250,7 +250,8 @@ def main():
 # draw all of the pieces and the board
 def updateBoard(g, board):
     board.draw(g.screen)
-    for p in g.pieces:
+    for coord in g.board_state:
+        p = g.board_state[coord]
         p.draw(g.screen, p.posn, p.image)
     pygame.display.update()    
 
@@ -260,6 +261,7 @@ def updatePiecePosition(g, piece, to_square):
     if piece.teammateOnSquare(coord,g):
         return False
     if piece.legalMove(coord, g):
+        checkCapture(coord, g)
         piece.posn = to_square
         del g.board_state[piece.coord]
         piece.coord = coord        
@@ -310,7 +312,13 @@ def nextTurn(game):
         game.turn = 'Black'
     else:
         game.turn = 'White'
-  
+
+# capture a piece on this square if we land there 
+def checkCapture(coord, g):
+    if coord in g.board_state:
+        del g.board_state[coord]
+    print(g.board_state.__len__())
+
 
 
 main()
