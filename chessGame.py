@@ -276,7 +276,6 @@ def addPieces(g):
     g.pieces.append(Rook('Black', (750, 50)))
     for p in g.pieces:
         g.board_state[p.coord] = p
-    print(g.board_state)
 
 def myround(x, base):
     return base * round(x/base)
