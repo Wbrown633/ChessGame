@@ -44,7 +44,16 @@ class Piece:
 
     def draw(self, screen, location, surface):
         location = (myround(location[0] - 50, 100), myround(location[1] - 50, 100))
-        screen.blit(surface, location)   
+        screen.blit(surface, location)
+
+    # return true if this piece has a teammate piece on the given square
+    def teammateOnSquare(self, coord, game):
+        if coord in game.board_state:
+            piece_on_square = game.board_state[coord]
+            if piece_on_square.color == self.color:
+                return True
+        return False
+
     
 
 
@@ -219,9 +228,13 @@ def main():
             # click to move pieces
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
+                    print(event.pos)
+                    print(findCoord(event.pos))
                     if g.selected_piece == None:
                         click = event.pos
-                        g.selected_piece = findClosestPiece(g,click)
+                        coord = findCoord(click)
+                        if coord in g.board_state:
+                            g.selected_piece = g.board_state[coord]
                     else:
                         to_square = (myround(event.pos[0], 50), myround(event.pos[1], 50))
                         if updatePiecePosition(g, g.selected_piece, to_square):
@@ -242,10 +255,12 @@ def updateBoard(g, board):
     pygame.display.update()    
 
 # if this piece can move to that position, move it there 
-def updatePiecePosition(g, piece, from_square):
-    coord = findCoord(from_square)
+def updatePiecePosition(g, piece, to_square):
+    coord = findCoord(to_square)
+    if piece.teammateOnSquare(coord,g):
+        return False
     if piece.legalMove(coord, g):
-        piece.posn = from_square
+        piece.posn = to_square
         del g.board_state[piece.coord]
         piece.coord = coord        
         g.board_state[coord] = piece 
@@ -280,14 +295,6 @@ def addPieces(g):
 def myround(x, base):
     return base * round(x/base)
 
-# given mouse location find the closest piece to that location
-# if we didn't click close enough to a piece return nothing 
-def findClosestPiece(g,mouse):
-    for p in g.pieces:
-        if (eucDist(mouse, p.posn) < 50):
-            return p
-
-
 # basic Euclidean distance
 def eucDist(pos1, pos2):
     dist = ((pos2[0] - pos1[0])**2 + (pos2[1] - pos1[1])**2)**.5
@@ -295,7 +302,7 @@ def eucDist(pos1, pos2):
 
 # given a posn return it's coordinates on the chess board
 def findCoord(posn):
-    return ((posn[0] + 50) // 100 , 8 - (posn[1] + 50) // 100 + 1)
+    return ((posn[0]) // 100 + 1, 8 - (posn[1]) // 100 )
 
 # change the color of the turn
 def nextTurn(game):
@@ -303,6 +310,7 @@ def nextTurn(game):
         game.turn = 'Black'
     else:
         game.turn = 'White'
+  
 
 
 main()
