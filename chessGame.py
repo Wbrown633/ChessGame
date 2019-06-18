@@ -63,7 +63,9 @@ class Piece:
 
 
 
-
+# TODO: Remove ability to capture forward
+# TODO: Add capturing diag 
+# TODO: En Passant 
 class Pawn(Piece): 
     
     def __init__(self, color, posn):
@@ -204,27 +206,36 @@ class Queen(Piece):
         else:
             return findStraightPath(start,end) 
 
+# TODO: Castling 
 class King(Piece):
     def __init__(self, color, posn):
         super().__init__(color, posn)
         self.image = pygame.transform.scale(pygame.image.load(color + "_king.PNG"), (100,100))
+        self.canCastle = True
 
-    # return a list of tuples with the coordinates of legal moves for this piece
+    # return true if this piece can move to the given coord 
     def legalMove(self, coord, game):
         if self.color != game.turn:
             return False
         x_dist = abs(self.coord[0] - coord[0])
         y_dist = abs(self.coord[1] - coord[1])
         dist = x_dist + y_dist
+
+        # Castling rules
+        # White
+        if self.color == 'White':
+            if self.canCastle and self.coord == (5,1) and (coord == (7,1) or coord == (3,1)):
+                castleWhite(self, game)  
+        # Black
+        else:
+            if self.canCastle and self.coord == (5,8) and (coord == (7,8) or coord == (3,8)):
+                castleBlack(self,game)
         if (dist == 1):
             return True
         elif (dist == 2):
             if (x_dist == 1):
                 return True
         return False
-
-    def move(self):
-        pass
 
     def findPath(self, start, end):
         return []    
@@ -415,6 +426,12 @@ def findDiagPath(start, end):
                 listofCoords.append(start)
 
     return listofCoords
+
+def castleWhite(king, game):
+    print("Castle White!")
+
+def castleBlack(king, game):
+    print("Castle Black!")    
 
 main()
 
