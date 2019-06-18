@@ -157,6 +157,7 @@ class Knight(Piece):
     def findPath(self, start, end):
         return []    
 
+# TODO: fix bux where light square bishop sometimes seems a teammate that isn't there
 class Bishop(Piece):
 
     def __init__(self, color, posn):
@@ -428,14 +429,41 @@ def findDiagPath(start, end):
     return listofCoords
 
 def castleWhite(king, coord, game):
+    # Kingside
     if coord[0] > king.coord[0]:
+        king.coord = (7,1)
+        king.posn = (650, 750)
+        rook = game.board_state[(8,1)]
+        rook.coord = (6,1)
+        rook.posn = (550, 750)
+        board = game.board_state
+        del board[(5,1)]
+        del board[(8,1)]
+        board[(7,1)] = king
+        board[(6,1)] = rook
         print("Castle Kingside White!")
+    # Queenside
     else:
+        king.coord = (3,1)
+        king.posn = (250, 750)
+        rook = game.board_state[(1,1)]
+        rook.coord = (4,1)
+        rook.posn = (350, 750)
+        board = game.board_state
+        del board[(5,1)]
+        del board[(1,1)]
+        board[(3,1)] = king
+        board[(4,1)] = rook
         print("Castle Queenside White!")
+    king.canCastle = False
+    game.turn = 'Black'
+
 
 def castleBlack(king, coord, game):
+    # Kingside
     if coord[0] > king.coord[0]:
         print("Castle Kingside Black!")
+    # Queenside
     else:
         print("Castle Queenside Black!") 
 
