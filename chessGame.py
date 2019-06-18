@@ -225,11 +225,11 @@ class King(Piece):
         # White
         if self.color == 'White':
             if self.canCastle and self.coord == (5,1) and (coord == (7,1) or coord == (3,1)):
-                castleWhite(self, game)  
+                castleWhite(self, coord, game)  
         # Black
         else:
             if self.canCastle and self.coord == (5,8) and (coord == (7,8) or coord == (3,8)):
-                castleBlack(self,game)
+                castleBlack(self, coord, game)
         if (dist == 1):
             return True
         elif (dist == 2):
@@ -427,11 +427,17 @@ def findDiagPath(start, end):
 
     return listofCoords
 
-def castleWhite(king, game):
-    print("Castle White!")
+def castleWhite(king, coord, game):
+    if coord[0] > king.coord[0]:
+        print("Castle Kingside White!")
+    else:
+        print("Castle Queenside White!")
 
-def castleBlack(king, game):
-    print("Castle Black!")    
+def castleBlack(king, coord, game):
+    if coord[0] > king.coord[0]:
+        print("Castle Kingside Black!")
+    else:
+        print("Castle Queenside Black!") 
 
 main()
 
