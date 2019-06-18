@@ -53,6 +53,11 @@ class Piece:
             if piece_on_square.color == self.color:
                 return True
         return False
+    
+    def pieceOnSquare(self, coord, game):
+        if coord in game.board_state:
+            return True
+        return False
 
     
 
@@ -259,12 +264,15 @@ def updatePiecePosition(g, piece, to_square):
     if piece.teammateOnSquare(coord,g):
         return False
     if piece.legalMove(coord, g):
-        path = findPath(piece.coord, coord)
+        path = findDiagPath(piece.coord, coord)
         print(path)
         for place in path:
             if piece.teammateOnSquare(place,g):
                 print("Teamate piece in the way!")
                 return False
+            if piece.pieceOnSquare(place,g):
+                print("Enemy piece in the way!")
+                return False    
         checkCapture(coord, g)
         piece.posn = to_square
         del g.board_state[piece.coord]
@@ -322,29 +330,43 @@ def checkCapture(coord, g):
     if coord in g.board_state:
         del g.board_state[coord]
 
-# return a list of posn between this location and that
-def findPath(start, end):
-    listofCoords = []
-    # Diagonal Line
-    if start[0] != end[0] and start[1] != end[1]:
-        if start[0] < end[0]:
-            while start[0] != end[0]:
-                start = (start[0] + 1, start[1] + 1)
-                listofCoords.append(start)
-            return listofCoords
-        if start[0] > end[0]:
-            while start[0] != end[0]:
-                start = (start[0] - 1, start[1] - 1)
-                listofCoords.append(start)
-            return listofCoords
-
+# return a list of posn between this location and that on a straight line
+def findStraightPath(start, end):
     # Horizontal Line
 
     # Vertical Line
-    elif start[1] != end[1]:
-        pass    
-    
-    return []   
+    pass
+
+# return a list of posn between this location and that on diagonal line
+def findDiagPath(start, end):
+    listofCoords = []    
+    if start[1] < end[1]:
+        # up and to the left
+        if start[0] > end[0]:
+            while start[0] > end[0] + 1:
+                start = (start[0] - 1, start[1] + 1)
+                listofCoords.append(start)
+
+        # up and to the right
+        else:
+            while start[0] < end[0] - 1:
+                start = (start[0] + 1, start[1] + 1)
+                listofCoords.append(start)
+
+    if start[1] > end[1]:
+
+        # down and to the left
+        if start[0] > end[0]:
+            while start[0] > end[0] + 1:
+                start = (start[0] - 1, start[1] - 1)
+                listofCoords.append(start)
+        # down and to the right
+        else:
+            while start[0] < end[0] - 1:
+                start = (start[0] + 1, start[1] - 1)
+                listofCoords.append(start)
+
+    return listofCoords
 
 main()
 
