@@ -108,6 +108,9 @@ class Pawn(Piece):
     def promote(self):
         pass
 
+    def findPath(self, start, end):
+        return findStraightPath(start,end)    
+
 class Rook(Piece):
 
     def __init__(self, color, posn):
@@ -124,6 +127,9 @@ class Rook(Piece):
         
     def move(self):
         pass
+
+    def findPath(self, start, end):
+        return findStraightPath(start, end)    
 
 
 class Knight(Piece):
@@ -146,6 +152,9 @@ class Knight(Piece):
     def move(self):
         pass
 
+    def findPath(self, start, end):
+        return []    
+
 class Bishop(Piece):
 
     def __init__(self, color, posn):
@@ -165,6 +174,9 @@ class Bishop(Piece):
 
     def move(self):
         pass
+    
+    def findPath(self, start, end):
+        return findDiagPath(start,end)
 
 class Queen(Piece):
 
@@ -184,6 +196,13 @@ class Queen(Piece):
 
     def move(self):
         pass
+    
+    def findPath(self, start, end):
+        if start[0] != end[0] and start[1] != end[1]:
+            return findDiagPath(start, end)
+
+        else:
+            return findStraightPath(start,end) 
 
 class King(Piece):
     def __init__(self, color, posn):
@@ -206,6 +225,9 @@ class King(Piece):
 
     def move(self):
         pass
+
+    def findPath(self, start, end):
+        return []    
 
 
 # define a main function
@@ -264,7 +286,7 @@ def updatePiecePosition(g, piece, to_square):
     if piece.teammateOnSquare(coord,g):
         return False
     if piece.legalMove(coord, g):
-        path = findDiagPath(piece.coord, coord)
+        path = piece.findPath(piece.coord, coord)
         print(path)
         for place in path:
             if piece.teammateOnSquare(place,g):
@@ -332,10 +354,36 @@ def checkCapture(coord, g):
 
 # return a list of posn between this location and that on a straight line
 def findStraightPath(start, end):
+    listofCoords = []
+
     # Horizontal Line
+    if start[1] == end[1]:
+        # move left
+        if start[0] > end[0]:
+            while start[0] > end[0] + 1:
+                start = (start[0] - 1, start[1])
+                listofCoords.append(start)
+
+        # move right
+        else:
+            while start[0] < end[0] - 1:
+                start = (start[0] + 1, start[1])
+                listofCoords.append(start)
 
     # Vertical Line
-    pass
+    else:
+        # move up 
+        if start[1] < end[1]:
+            while start[1] < end[1] - 1:
+                start = (start[0], start[1] + 1)
+                listofCoords.append(start)
+
+        # move down
+        else:
+            while start[1] > end[1] + 1:
+                start = (start[0], start[1] - 1)
+                listofCoords.append(start)
+    return listofCoords
 
 # return a list of posn between this location and that on diagonal line
 def findDiagPath(start, end):
