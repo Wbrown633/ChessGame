@@ -207,7 +207,6 @@ class Queen(Piece):
         else:
             return findStraightPath(start,end) 
 
-# TODO: Castling 
 class King(Piece):
     def __init__(self, color, posn):
         super().__init__(color, posn)
@@ -444,6 +443,7 @@ def castleWhite(king, coord, game):
         print("Castle Kingside White!")
     # Queenside
     else:
+
         king.coord = (3,1)
         king.posn = (250, 750)
         rook = game.board_state[(1,1)]
@@ -462,10 +462,32 @@ def castleWhite(king, coord, game):
 def castleBlack(king, coord, game):
     # Kingside
     if coord[0] > king.coord[0]:
+        king.coord = (7,8)
+        king.posn = (650, 50)
+        rook = game.board_state[(8,8)]
+        rook.coord = (6,8)
+        rook.posn = (550, 50)
+        board = game.board_state
+        del board[(5,8)]
+        del board[(8,8)]
+        board[(7,8)] = king
+        board[(6,8)] = rook
         print("Castle Kingside Black!")
     # Queenside
     else:
+        king.coord = (3,8)
+        king.posn = (250, 50)
+        rook = game.board_state[(1,8)]
+        rook.coord = (4,8)
+        rook.posn = (350, 50)
+        board = game.board_state
+        del board[(5,8)]
+        del board[(1,8)]
+        board[(3,8)] = king
+        board[(4,8)] = rook
         print("Castle Queenside Black!") 
+    king.canCastle = False
+    game.turn = 'White'    
 
 main()
 
