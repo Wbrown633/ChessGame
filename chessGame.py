@@ -44,7 +44,7 @@ class Piece:
 
     def draw(self, screen, location, surface):
         location = (myround(location[0] - 50, 100), myround(location[1] - 50, 100))
-        screen.blit(surface, location)
+        screen.blit(surface, findPosn(self.coord))
 
     # return true if this piece has a teammate piece on the given square
     def teammateOnSquare(self, coord, game):
@@ -298,7 +298,6 @@ def updatePiecePosition(g, piece, to_square):
         return False
     if piece.legalMove(coord, g):
         path = piece.findPath(piece.coord, coord)
-        print(path)
         for place in path:
             if piece.teammateOnSquare(place,g):
                 print("Teamate piece in the way!")
@@ -488,6 +487,12 @@ def castleBlack(king, coord, game):
         print("Castle Queenside Black!") 
     king.canCastle = False
     game.turn = 'White'    
+
+def findPosn(coord):
+
+    posn = (coord[0] * 100 - 100, abs(coord[1]-8) * 100)
+    return posn
+
 
 main()
 
