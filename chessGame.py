@@ -7,7 +7,7 @@ class Game:
     def __init__(self):
         self.pieces = []
         self.objects = []
-        self.board_image = pygame.image.load("board.gif")
+        self.board_image = pygame.image.load("Resources/board.gif")
         self.screen = pygame.display.set_mode((800,800), pygame.RESIZABLE)
         self.selected_piece = None
         self.board_state = {}
@@ -71,7 +71,7 @@ class Pawn(Piece):
     def __init__(self, color, posn):
         super().__init__(color, posn)
         self.hasMoved = False
-        self.image = pygame.transform.scale(pygame.image.load(color + "_pawn.PNG"), (100,100))
+        self.image = pygame.transform.scale(pygame.image.load("Resources/" + color + "_pawn.PNG"), (100,100))
 
     # return true if the piece can move to that location, false if not
     def legalMove(self, location, game):
@@ -117,7 +117,7 @@ class Rook(Piece):
 
     def __init__(self, color, posn):
         super().__init__(color, posn)
-        self.image = pygame.transform.scale(pygame.image.load(color + "_rook.PNG"), (100,100))
+        self.image = pygame.transform.scale(pygame.image.load("Resources/" + color + "_rook.PNG"), (100,100))
     # return true if moving to the given coord is legal 
     def legalMove(self, coord, game):
         if self.color != game.turn:
@@ -138,7 +138,7 @@ class Knight(Piece):
 
     def __init__(self, color, posn):
         super().__init__(color, posn)
-        self.image = pygame.transform.scale(pygame.image.load(color + "_knight.PNG"), (100,100))
+        self.image = pygame.transform.scale(pygame.image.load("Resources/" + color + "_knight.PNG"), (100,100))
 
     # return a list of tuples with the coordinates of legal moves for this piece
     def legalMove(self,coord,game):
@@ -162,7 +162,7 @@ class Bishop(Piece):
 
     def __init__(self, color, posn):
         super().__init__(color, posn)
-        self.image = pygame.transform.scale(pygame.image.load(color + "_bishop.PNG"), (100,100))
+        self.image = pygame.transform.scale(pygame.image.load("Resources/" + color + "_bishop.PNG"), (100,100))
 
 
     # return a list of tuples with the coordinates of legal moves for this piece
@@ -185,7 +185,7 @@ class Queen(Piece):
 
     def __init__(self, color, posn):
         super().__init__(color, posn)
-        self.image = pygame.transform.scale(pygame.image.load(color + "_queen.PNG"), (100,100))
+        self.image = pygame.transform.scale(pygame.image.load("Resources/" + color + "_queen.PNG"), (100,100))
 
     # return a list of tuples with the coordinates of legal moves for this piece
     def legalMove(self, coord, game):
@@ -210,7 +210,7 @@ class Queen(Piece):
 class King(Piece):
     def __init__(self, color, posn):
         super().__init__(color, posn)
-        self.image = pygame.transform.scale(pygame.image.load(color + "_king.PNG"), (100,100))
+        self.image = pygame.transform.scale(pygame.image.load("Resources/" + color + "_king.PNG"), (100,100))
         self.canCastle = True
 
     # return true if this piece can move to the given coord 
@@ -255,14 +255,14 @@ def main():
 
     # define a variable to control the main loop
     running = True
-     
+    updateBoard(g, board)
+    pygame.display.update()
     # main loop
     while running:
 
         # event handling, gets all event from the event queue
         for event in pygame.event.get():
-            pygame.display.update()
-            updateBoard(g, board)
+            
             # click to move pieces
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -277,6 +277,9 @@ def main():
                             nextTurn(g)
                         updateBoard(g, board)
                         g.selected_piece = None
+                    updateBoard(g, board)
+                    pygame.display.update()
+                    print("Update")    
                 
             # only do something if the event is of type QUIT
             if event.type == pygame.QUIT:
