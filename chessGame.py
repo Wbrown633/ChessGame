@@ -130,15 +130,16 @@ class Pawn(Piece):
                     return False
                              
     # TODO: Allow under promotion
-    def promote(self, game):
+    def promote(self, game, coord):
         print("Promote!")
-        board = game.board_state
-
         # delete the pawn
-        del board[self.coord]
+        del game.board_state[self.coord]
 
+        # take the piece if we're moving onto one 
+        if coord in game.board_state:
+            del game.board_state[coord]
         # add the queen
-        board[self.coord] = Queen(self.color, self.posn)
+        game.board_state[self.coord] = Queen(self.color, findPosn(coord))
 
 
     def findPath(self, start, end):
@@ -333,8 +334,9 @@ def updatePiecePosition(g, piece, to_square):
     if piece.teammateOnSquare(coord,g):
         return False
     if piece.legalMove(coord, g):
-        if piece.__class__ == 'Pawn' and (coord[1] == 1 or coord[1] == 8):
-            piece.promote(g)
+        if piece.pieceType() == 'Pawn' and (coord[1] == 1 or coord[1] == 8):
+            piece.promote(g, coord)
+            return True
         path = piece.findPath(piece.coord, coord)
         for place in path:
             if piece.teammateOnSquare(place,g):
