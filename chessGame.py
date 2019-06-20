@@ -12,6 +12,8 @@ class Game:
         self.selected_piece = None
         self.board_state = {}
         self.turn = 'White'
+        self.enPassantWhite = None
+        self.enPassantBlack = None
     
 
 class Board:   
@@ -60,7 +62,8 @@ class Piece:
         return False
 
 
-# TODO: En Passant 
+# TODO: En Passant
+# TODO: Promotion 
 class Pawn(Piece): 
     
     def __init__(self, color, posn):
@@ -83,15 +86,23 @@ class Pawn(Piece):
             return False
 
         # capture diagonally 
-        if abs(x_dist) == 1 and location in game.board_state:
+        if abs(x_dist) == 1 and abs(y_dist) == 1 and location in game.board_state:
             piece = game.board_state[location]
             if piece.color != self.color:
+                self.hasMoved = True
                 return True
 
         if self.color == 'White':
+            # Capture en passant
+            if game.enPassantBlack == location:
+                if abs(x_dist == 1) and abs(y_dist) == 1:
+                    print ("En Passant!")
+                    return True
             if self.hasMoved == False:
                 if x_dist == 0 and (y_dist == 1 or y_dist == 2):
                     self.hasMoved = True
+                    game.enPassantWhite = (location[0], location[1] - 1)
+                    print ("White en passant at : " + str(game.enPassantWhite))
                     return True
                 else: 
                     return False 
@@ -102,9 +113,16 @@ class Pawn(Piece):
                     return False
         # move logic for black pawns 
         else:
+            # Capture en passant
+            if game.enPassantWhite == location:
+                if abs(x_dist == 1) and abs(y_dist) == 1:
+                    print ("En Passant!")
+                    return True
             if self.hasMoved == False:
                 if x_dist == 0 and (y_dist == -1 or y_dist == -2):
                     self.hasMoved = True
+                    game.enPassantBlack = (location[0], location[1] + 1)
+                    print("Black en passant at : " + str(game.enPassantBlack))
                     return True
                 else: 
                     return False 
@@ -115,7 +133,7 @@ class Pawn(Piece):
                     return False
                              
     
-    def promote(self):
+    def promote(self, game):
         pass
 
     def findPath(self, start, end):
@@ -165,7 +183,7 @@ class Knight(Piece):
     def findPath(self, start, end):
         return []    
 
-# TODO: fix bux where light square bishop sometimes seems a teammate that isn't there
+
 class Bishop(Piece):
 
     def __init__(self, color, posn):
@@ -214,6 +232,10 @@ class Queen(Piece):
 
         else:
             return findStraightPath(start,end) 
+
+# TODO: Implement Check and Checkmate
+# TODO: Prevent user from castling into or out of check
+# TODO: Preven user from moving a piece if it puts them in check 
 
 class King(Piece):
     def __init__(self, color, posn):
@@ -299,7 +321,7 @@ def updateBoard(g, board):
     for coord in g.board_state:
         p = g.board_state[coord]
         p.draw(g.screen, p.posn, p.image)
-    pygame.display.update()    
+    pygame.display.update()  
 
 # if this piece can move to that position, move it there 
 def updatePiecePosition(g, piece, to_square):
