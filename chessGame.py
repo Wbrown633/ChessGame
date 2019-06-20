@@ -62,7 +62,6 @@ class Piece:
         return False
 
 
-# TODO: En Passant
 # TODO: Promotion 
 class Pawn(Piece): 
     
@@ -97,13 +96,11 @@ class Pawn(Piece):
             if game.enPassantBlack == location:
                 if abs(x_dist) == 1 and abs(y_dist) == 1:
                     del game.board_state[(location[0], location[1] - 1)]
-                    print ("En Passant!")
                     return True
             if self.hasMoved == False:
                 if x_dist == 0 and (y_dist == 1 or y_dist == 2):
                     self.hasMoved = True
                     game.enPassantWhite = (location[0], location[1] - 1)
-                    print ("White en passant at : " + str(game.enPassantWhite))
                     return True
                 else: 
                     return False 
@@ -117,14 +114,12 @@ class Pawn(Piece):
             # Capture en passant
             if game.enPassantWhite == location:
                 if abs(x_dist) == 1 and abs(y_dist) == 1:
-                    print ("En Passant!")
                     del game.board_state[(location[0], location[1] + 1)]
                     return True
             if self.hasMoved == False:
                 if x_dist == 0 and (y_dist == -1 or y_dist == -2):
                     self.hasMoved = True
                     game.enPassantBlack = (location[0], location[1] + 1)
-                    print("Black en passant at : " + str(game.enPassantBlack))
                     return True
                 else: 
                     return False 
@@ -134,9 +129,17 @@ class Pawn(Piece):
                 else:
                     return False
                              
-    
+    # TODO: Allow under promotion
     def promote(self, game):
-        pass
+        print("Promote!")
+        board = game.board_state
+
+        # delete the pawn
+        del board[self.coord]
+
+        # add the queen
+        board[self.coord] = Queen(self.color, self.posn)
+
 
     def findPath(self, start, end):
         return findStraightPath(start,end)    
@@ -307,7 +310,6 @@ def main():
                         to_square = (myround(event.pos[0], 50), myround(event.pos[1], 50))
                         if updatePiecePosition(g, g.selected_piece, to_square):
                             nextTurn(g)
-                        updateBoard(g, board)
                         g.selected_piece = None
                     updateBoard(g, board)
                     pygame.display.update()  
@@ -331,6 +333,8 @@ def updatePiecePosition(g, piece, to_square):
     if piece.teammateOnSquare(coord,g):
         return False
     if piece.legalMove(coord, g):
+        if piece.__class__ == 'Pawn' and (coord[1] == 1 or coord[1] == 8):
+            piece.promote(g)
         path = piece.findPath(piece.coord, coord)
         for place in path:
             if piece.teammateOnSquare(place,g):
