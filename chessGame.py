@@ -59,12 +59,7 @@ class Piece:
             return True
         return False
 
-    
 
-
-
-# TODO: Remove ability to capture forward
-# TODO: Add capturing diag 
 # TODO: En Passant 
 class Pawn(Piece): 
     
@@ -78,8 +73,21 @@ class Pawn(Piece):
         x_dist = location[0] - self.coord[0]
         y_dist = location[1] - self.coord[1]
         dist = x_dist + y_dist
+
+        # can't move out of turn
         if self.color != game.turn:
             return False
+
+        # cannot move through pieces
+        if location in game.board_state and x_dist == 0:
+            return False
+
+        # capture diagonally 
+        if abs(x_dist) == 1 and location in game.board_state:
+            piece = game.board_state[location]
+            if piece.color != self.color:
+                return True
+
         if self.color == 'White':
             if self.hasMoved == False:
                 if x_dist == 0 and (y_dist == 1 or y_dist == 2):
@@ -278,8 +286,7 @@ def main():
                         updateBoard(g, board)
                         g.selected_piece = None
                     updateBoard(g, board)
-                    pygame.display.update()
-                    print("Update")    
+                    pygame.display.update()  
                 
             # only do something if the event is of type QUIT
             if event.type == pygame.QUIT:
