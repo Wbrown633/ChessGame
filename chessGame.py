@@ -95,7 +95,8 @@ class Pawn(Piece):
         if self.color == 'White':
             # Capture en passant
             if game.enPassantBlack == location:
-                if abs(x_dist == 1) and abs(y_dist) == 1:
+                if abs(x_dist) == 1 and abs(y_dist) == 1:
+                    del game.board_state[(location[0], location[1] - 1)]
                     print ("En Passant!")
                     return True
             if self.hasMoved == False:
@@ -115,8 +116,9 @@ class Pawn(Piece):
         else:
             # Capture en passant
             if game.enPassantWhite == location:
-                if abs(x_dist == 1) and abs(y_dist) == 1:
+                if abs(x_dist) == 1 and abs(y_dist) == 1:
                     print ("En Passant!")
+                    del game.board_state[(location[0], location[1] + 1)]
                     return True
             if self.hasMoved == False:
                 if x_dist == 0 and (y_dist == -1 or y_dist == -2):
