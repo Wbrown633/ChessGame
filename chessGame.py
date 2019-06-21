@@ -14,6 +14,8 @@ class Game:
         self.turn = 'White'
         self.enPassantWhite = None
         self.enPassantBlack = None
+        self.whiteInCheck = False
+        self.blackInCheck = False
     
 
 class Board:   
@@ -62,7 +64,6 @@ class Piece:
         return False
 
 
-# TODO: Promotion 
 class Pawn(Piece): 
     
     def __init__(self, color, posn):
@@ -131,7 +132,6 @@ class Pawn(Piece):
                              
     # TODO: Allow under promotion
     def promote(self, game, coord):
-        print("Promote!")
         # delete the pawn
         del game.board_state[self.coord]
 
@@ -329,7 +329,7 @@ def updateBoard(g, board):
     pygame.display.update()
     f = pygame.font.Font(None, 40)
     s = f.render(g.turn, True, [0, 0, 0], [255, 255, 255])
-    g.screen.blit(s, (800,400))
+    g.screen.blit(s, (800,350))
 
 # if this piece can move to that position, move it there 
 def updatePiecePosition(g, piece, to_square):
