@@ -8,7 +8,7 @@ class Game:
         self.pieces = []
         self.objects = []
         self.board_image = pygame.image.load("Resources/board.gif")
-        self.screen = pygame.display.set_mode((800,800), pygame.RESIZABLE)
+        self.screen = pygame.display.set_mode((900,800), pygame.RESIZABLE)
         self.selected_piece = None
         self.board_state = {}
         self.turn = 'White'
@@ -139,7 +139,7 @@ class Pawn(Piece):
         if coord in game.board_state:
             del game.board_state[coord]
         # add the queen
-        game.board_state[self.coord] = Queen(self.color, findPosn(coord))
+        game.board_state[coord] = Queen(self.color, findPosn(coord))
 
 
     def findPath(self, start, end):
@@ -326,7 +326,10 @@ def updateBoard(g, board):
     for coord in g.board_state:
         p = g.board_state[coord]
         p.draw(g.screen, p.posn, p.image)
-    pygame.display.update()  
+    pygame.display.update()
+    f = pygame.font.Font(None, 40)
+    s = f.render(g.turn, True, [0, 0, 0], [255, 255, 255])
+    g.screen.blit(s, (800,400))
 
 # if this piece can move to that position, move it there 
 def updatePiecePosition(g, piece, to_square):
