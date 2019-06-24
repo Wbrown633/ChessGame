@@ -16,6 +16,8 @@ class Game:
         self.enPassantBlack = None
         self.whiteInCheck = False
         self.blackInCheck = False
+        self.whiteKing = None
+        self.blackKing = None
     
 
 class Board:   
@@ -57,7 +59,7 @@ class Piece:
             return True
         return False
 
-    def legalMove(self, coord):
+    def legalMove(self, coord, game):
         pass
 
     # Return true if this piece can capture that piece
@@ -66,7 +68,7 @@ class Piece:
         if self.color == piece.color:
             return False
 
-        if self.legalMove(piece.coord):
+        if self.legalMove(piece.coord, game):
             if pieceInPath(piece, game, piece.coord) == False or self.pieceType == "Knight":
                 return True
         return False
@@ -329,6 +331,15 @@ def updateBoard(g, board):
     for coord in g.board_state:
         p = g.board_state[coord]
         p.draw(g.screen, p.posn, p.image)
+        if p.color == 'White':
+            print(g.blackKing.coord)
+            if p.canCapture(g.blackKing, g):
+                g.blackInCheck = True
+                print("Black in check")
+        else:
+            if p.canCapture(g.whiteKing, g):
+                g.whiteInCheck = True
+                print("White in check")
     pygame.display.update()
     f = pygame.font.Font(None, 40)
     s = f.render(g.turn, True, [0, 0, 0], [255, 255, 255])
@@ -370,13 +381,15 @@ def pieceInPath(piece, g, to_square):
             return False 
 
 def addPieces(g):
+    whiteKing = King('White', (450, 750))
+    blackKing = King('Black', (450, 50))
     for x in range(8):
         g.pieces.append(Pawn('White', (50 + x * 100,650)))
     g.pieces.append(Rook('White', (50, 750)))
     g.pieces.append(Knight('White', (150, 750)))
     g.pieces.append(Bishop('White', (250, 750)))
     g.pieces.append(Queen('White', (350, 750)))
-    g.pieces.append(King('White', (450, 750)))
+    g.pieces.append(whiteKing)
     g.pieces.append(Bishop('White', (550, 750)))
     g.pieces.append(Knight('White', (650, 750)))    
     g.pieces.append(Rook('White', (750, 750)))
@@ -386,10 +399,12 @@ def addPieces(g):
     g.pieces.append(Knight('Black', (150, 50)))
     g.pieces.append(Bishop('Black', (250, 50)))
     g.pieces.append(Queen('Black', (350, 50)))
-    g.pieces.append(King('Black', (450, 50)))
+    g.pieces.append(blackKing)
     g.pieces.append(Bishop('Black', (550, 50)))
     g.pieces.append(Knight('Black', (650, 50)))    
     g.pieces.append(Rook('Black', (750, 50)))
+    g.blackKing = blackKing
+    g.whiteKing = whiteKing
     for p in g.pieces:
         g.board_state[p.coord] = p
 
