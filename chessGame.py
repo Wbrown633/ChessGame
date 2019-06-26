@@ -332,14 +332,15 @@ def updateBoard(g, board):
         p = g.board_state[coord]
         p.draw(g.screen, p.posn, p.image)
         if p.color == 'White':
-            print(g.blackKing.coord)
-            if p.canCapture(g.blackKing, g):
-                g.blackInCheck = True
-                print("Black in check")
+            pass
+            #if p.canCapture(g.blackKing, g):
+             #   g.blackInCheck = True
+              #  print("Black in check")
         else:
-            if p.canCapture(g.whiteKing, g):
-                g.whiteInCheck = True
-                print("White in check")
+            pass
+            #if p.canCapture(g.whiteKing, g):
+             #   g.whiteInCheck = True
+              #  print("White in check")
     pygame.display.update()
     f = pygame.font.Font(None, 40)
     s = f.render(g.turn, True, [0, 0, 0], [255, 255, 255])
@@ -373,6 +374,7 @@ def updatePiecePosition(g, piece, to_square):
 def pieceInPath(piece, g, to_square):
     path = piece.findPath(piece.coord, to_square)
     for place in path:
+        print(place)
         if piece.teammateOnSquare(place,g):
             print("Teamate piece in the way!")
             return False
