@@ -435,6 +435,7 @@ def capture(coord, g):
         del g.board_state[coord]
 
 # return a list of posn between this location and that on a straight line
+# Not including the start or end point
 def findStraightPath(start, end):
     listofCoords = []
 
