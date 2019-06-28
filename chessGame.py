@@ -71,8 +71,8 @@ class Piece:
             return False
 
         if self.legalMove(piece.coord, game):
-            if pieceInPath(piece, game, piece.coord) == False or self.pieceType == "Knight":
-                print("Can capture!")
+            if pieceInPath(piece, game, piece.coord) == False:
+                print(self.pieceType() + " Can capture!" + "On : " + str(piece.coord) )
                 return True     
         return False
     
@@ -381,7 +381,7 @@ def pieceInPath(piece, g, coord):
         if piece.pieceOnSquare(place,g):
             print("Enemy piece in the way!")
             return True 
-    return False        
+    return False
 
 def addPieces(g):
     whiteKing = King('White', (5, 1))
