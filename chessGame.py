@@ -34,10 +34,11 @@ class Board:
 class Piece:
     """Abstract base class all pieces inherit from"""  
 
-    def __init__ (self, color, posn):
+    def __init__ (self, color, coord):
         self.color = color # set the color of this piece 
-        self.posn = posn # set the starting posn of this piece
-        self.coord = findCoord(posn) # starting coord calculated based on starting posn
+        posn = findPosn(coord) # set the starting posn of this piece
+        self.coord = coord # starting coord calculated based on starting posn
+        self.posn = posn
     
     def pieceType(self):
         return type(self).__name__
@@ -383,28 +384,28 @@ def pieceInPath(piece, g, to_square):
             return False 
 
 def addPieces(g):
-    whiteKing = King('White', (450, 750))
-    blackKing = King('Black', (450, 50))
+    whiteKing = King('White', (5, 1))
+    blackKing = King('Black', (5, 8))
     for x in range(8):
-        g.pieces.append(Pawn('White', (50 + x * 100,650)))
-    g.pieces.append(Rook('White', (50, 750)))
-    g.pieces.append(Knight('White', (150, 750)))
-    g.pieces.append(Bishop('White', (250, 750)))
-    g.pieces.append(Queen('White', (350, 750)))
+        g.pieces.append(Pawn('White', (x + 1, 2)))
+    g.pieces.append(Rook('White', (1, 1)))
+    g.pieces.append(Knight('White', (2, 1)))
+    g.pieces.append(Bishop('White', (3, 1)))
+    g.pieces.append(Queen('White', (4, 1)))
     g.pieces.append(whiteKing)
-    g.pieces.append(Bishop('White', (550, 750)))
-    g.pieces.append(Knight('White', (650, 750)))    
-    g.pieces.append(Rook('White', (750, 750)))
+    g.pieces.append(Bishop('White', (6, 1)))
+    g.pieces.append(Knight('White', (7, 1)))    
+    g.pieces.append(Rook('White', (8, 1)))
     for x in range(8):
-        g.pieces.append(Pawn('Black', (50 + x * 100,150)))
-    g.pieces.append(Rook('Black', (50, 50)))
-    g.pieces.append(Knight('Black', (150, 50)))
-    g.pieces.append(Bishop('Black', (250, 50)))
-    g.pieces.append(Queen('Black', (350, 50)))
+        g.pieces.append(Pawn('Black', (x + 1, 7)))
+    g.pieces.append(Rook('Black', (1, 8)))
+    g.pieces.append(Knight('Black', (2, 8)))
+    g.pieces.append(Bishop('Black', (3, 8)))
+    g.pieces.append(Queen('Black', (4, 8)))
     g.pieces.append(blackKing)
-    g.pieces.append(Bishop('Black', (550, 50)))
-    g.pieces.append(Knight('Black', (650, 50)))    
-    g.pieces.append(Rook('Black', (750, 50)))
+    g.pieces.append(Bishop('Black', (6, 8)))
+    g.pieces.append(Knight('Black', (7, 8)))    
+    g.pieces.append(Rook('Black', (8, 8)))
     g.blackKing = blackKing
     g.whiteKing = whiteKing
     for p in g.pieces:
