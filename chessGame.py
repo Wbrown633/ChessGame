@@ -67,11 +67,13 @@ class Piece:
     def canCapture(self, piece, game):
         # Can't capture teammates
         if self.color == piece.color:
+            print("can't capture teammates")
             return False
 
         if self.legalMove(piece.coord, game):
             if pieceInPath(piece, game, piece.coord) == False or self.pieceType == "Knight":
-                return True
+                print("Can capture!")
+                return True     
         return False
     
     # move this piece to_square
@@ -232,8 +234,8 @@ class Queen(Piece):
     def legalMove(self, coord, game):
         if self.color != game.turn:
             return False
-        r = Rook(self.color, self.posn)
-        b = Bishop(self.color, self.posn)
+        r = Rook(self.color, coord)
+        b = Bishop(self.color, coord)
         if (r.legalMove(coord,game) or b.legalMove(coord,game)):
             return True
         return False
@@ -333,15 +335,13 @@ def updateBoard(g, board):
         p = g.board_state[coord]
         p.draw(g.screen, p.posn, p.image)
         if p.color == 'White':
-            pass
-            #if p.canCapture(g.blackKing, g):
-             #   g.blackInCheck = True
-              #  print("Black in check")
+            if p.canCapture(g.blackKing, g):
+                g.blackInCheck = True
+                print("Black in check")
         else:
-            pass
-            #if p.canCapture(g.whiteKing, g):
-             #   g.whiteInCheck = True
-              #  print("White in check")
+            if p.canCapture(g.whiteKing, g):
+                g.whiteInCheck = True
+                print("White in check")
     pygame.display.update()
     f = pygame.font.Font(None, 40)
     s = f.render(g.turn, True, [0, 0, 0], [255, 255, 255])
@@ -364,7 +364,7 @@ def updatePiecePosition(g, piece, to_square):
         if piece.pieceType() == 'Pawn' and (coord[1] == 1 or coord[1] == 8):
             piece.promote(g, coord)
             return True
-        if pieceInPath(piece, g, to_square):
+        if pieceInPath(piece, g, coord):
             return False          
         capture(coord, g)
         piece.move(to_square, g)         
@@ -372,16 +372,16 @@ def updatePiecePosition(g, piece, to_square):
     return False    
     
 # return True if there is a piece (enemy or teammate) that is in the way
-def pieceInPath(piece, g, to_square):
-    path = piece.findPath(piece.coord, to_square)
+def pieceInPath(piece, g, coord):
+    path = piece.findPath(piece.coord, coord)
     for place in path:
-        print(place)
         if piece.teammateOnSquare(place,g):
             print("Teamate piece in the way!")
-            return False
+            return True
         if piece.pieceOnSquare(place,g):
             print("Enemy piece in the way!")
-            return False 
+            return True 
+    return False        
 
 def addPieces(g):
     whiteKing = King('White', (5, 1))
@@ -471,7 +471,7 @@ def findStraightPath(start, end):
 
 # return a list of posn between this location and that on diagonal line
 def findDiagPath(start, end):
-    listofCoords = []    
+    listofCoords = []  
     if start[1] < end[1]:
         # up and to the left
         if start[0] > end[0]:
