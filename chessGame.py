@@ -72,7 +72,7 @@ class Piece:
 
         if self.legalMove(piece.coord, game):
             if pieceInPath(piece, game, piece.coord) == False:
-                print(self.pieceType() + " Can capture!" + "On : " + str(piece.coord) )
+                print(self.pieceType() + " Can capture " + piece.pieceType() +  " On : " + str(piece.coord) )
                 return True     
         return False
     
@@ -86,8 +86,8 @@ class Piece:
 
 class Pawn(Piece): 
     
-    def __init__(self, color, posn):
-        super().__init__(color, posn)
+    def __init__(self, color, coord):
+        super().__init__(color, coord)
         self.hasMoved = False
         self.image = pygame.transform.scale(pygame.image.load("Resources/" + color + "_pawn.PNG"), (100,100))
 
@@ -167,8 +167,8 @@ class Pawn(Piece):
 
 class Rook(Piece):
 
-    def __init__(self, color, posn):
-        super().__init__(color, posn)
+    def __init__(self, color, coord):
+        super().__init__(color, coord)
         self.image = pygame.transform.scale(pygame.image.load("Resources/" + color + "_rook.PNG"), (100,100))
     # return true if moving to the given coord is legal 
     def legalMove(self, coord, game):
@@ -185,8 +185,8 @@ class Rook(Piece):
 
 class Knight(Piece):
 
-    def __init__(self, color, posn):
-        super().__init__(color, posn)
+    def __init__(self, color, coord):
+        super().__init__(color, coord)
         self.image = pygame.transform.scale(pygame.image.load("Resources/" + color + "_knight.PNG"), (100,100))
 
     # return a list of tuples with the coordinates of legal moves for this piece
@@ -206,8 +206,8 @@ class Knight(Piece):
 
 class Bishop(Piece):
 
-    def __init__(self, color, posn):
-        super().__init__(color, posn)
+    def __init__(self, color, coord):
+        super().__init__(color, coord)
         self.image = pygame.transform.scale(pygame.image.load("Resources/" + color + "_bishop.PNG"), (100,100))
 
 
@@ -226,16 +226,16 @@ class Bishop(Piece):
 
 class Queen(Piece):
 
-    def __init__(self, color, posn):
-        super().__init__(color, posn)
+    def __init__(self, color, coord):
+        super().__init__(color, coord)
         self.image = pygame.transform.scale(pygame.image.load("Resources/" + color + "_queen.PNG"), (100,100))
 
-    # return a list of tuples with the coordinates of legal moves for this piece
+    # return true if this piece can legally move to that square
     def legalMove(self, coord, game):
         if self.color != game.turn:
             return False
-        r = Rook(self.color, coord)
-        b = Bishop(self.color, coord)
+        r = Rook(self.color, self.coord)
+        b = Bishop(self.color, self.coord)
         if (r.legalMove(coord,game) or b.legalMove(coord,game)):
             return True
         return False
@@ -252,8 +252,8 @@ class Queen(Piece):
 # TODO: Preven user from moving a piece if it puts them in check 
 
 class King(Piece):
-    def __init__(self, color, posn):
-        super().__init__(color, posn)
+    def __init__(self, color, coord):
+        super().__init__(color, coord)
         self.image = pygame.transform.scale(pygame.image.load("Resources/" + color + "_king.PNG"), (100,100))
         self.canCastle = True
 
@@ -374,6 +374,7 @@ def updatePiecePosition(g, piece, to_square):
 # return True if there is a piece (enemy or teammate) that is in the way
 def pieceInPath(piece, g, coord):
     path = piece.findPath(piece.coord, coord)
+
     for place in path:
         if piece.teammateOnSquare(place,g):
             print("Teamate piece in the way!")
